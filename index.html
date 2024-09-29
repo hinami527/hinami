@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Apex Legends 集計サイト</title>
+</head>
+<body>
+    <h1>Apex Legends 集計サイト</h1>
+    
+    <h2>設定</h2>
+    <form action="/settings" method="POST">
+        <label for="team_count">チーム数:</label>
+        <input type="number" id="team_count" name="team_count" required min="1" max="30">
+
+        <label for="kill_point">キルポイント:</label>
+        <input type="number" id="kill_point" name="kill_point" required>
+
+        <label for="kill_limit">キルポイント制限:</label>
+        <input type="number" id="kill_limit" name="kill_limit" required>
+
+        <h3>順位ポイント設定（最大 {{ point_settings['team_count'] }} チーム）</h3>
+        {% for i in range(point_settings['team_count']) %}
+        <label for="rank_point_{{ i + 1 }}">{{ i + 1 }} 位ポイント:</label>
+        <input type="number" id="rank_point_{{ i + 1 }}" name="rank_point_{{ i + 1 }}" required>
+        {% endfor %}
+
+        <button type="submit">設定を保存</button>
+    </form>
+
+    <h2>チーム情報の入力</h2>
+    <form action="/add_team" method="POST">
+        <label for="team_name">チーム名:</label>
+        <input type="text" id="team_name" name="team_name" required>
+        
+        <label for="kills">キル数:</label>
+        <input type="number" id="kills" name="kills" required>
+        
+        <label for="rank">順位:</label>
+        <input type="number" id="rank" name="rank" required min="1" max="{{ point_settings['team_count'] }}">
+        
+        <button type="submit">チームを追加</button>
+    </form>
+    
+    <h2>集計結果</h2>
+    <table border="1">
+        <tr>
+            <th>チーム名</th>
+            <th>キル数</th>
+            <th>順位</th>
+            <th>ポイント</th>
+        </tr>
+        {% for team in teams %}
+        <tr>
+            <td>{{ team.name }}</td>
+            <td>{{ team.kills }}</td>
+            <td>{{ team.rank }}</td>
+            <td>{{ team.points }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
